@@ -12,7 +12,7 @@ db_config = {
 }
 
 
-
+# Dispalyin tasks
 @app.route('/')
 def index():
     conn = mysql.connector.connect(**db_config)
@@ -22,6 +22,7 @@ def index():
     conn.close()
     return render_template('index.html', tasks=tasks)
 
+# Adding task 
 @app.route('/add', methods=['POST'])
 def add_task():
     task_title = request.form.get('task')
@@ -33,6 +34,7 @@ def add_task():
         conn.close()
     return redirect(url_for('index'))
 
+# Delete task
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
     conn = mysql.connector.connect(**db_config)
@@ -42,6 +44,15 @@ def delete_task(task_id):
     conn.close()
     return redirect(url_for('index'))
 
+# Mark completed
+@app.route('/complete/<int:task_id>')
+def complete_task(task_id):
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE tasks SET completed = TRUE WHERE id = %s", (task_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
