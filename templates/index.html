@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask To-Do App</title>
+    <title>Flask To-Do App with MySQL</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -17,8 +17,11 @@
         <ul class="task-list">
             {% for task in tasks %}
             <li>
-                {{ loop.index }}. {{ task }}
-                <a href="/delete/{{ loop.index0 }}" class="delete-btn">Delete</a> 
+                <span style="text-decoration: {% if task.completed %}line-through{% endif %};">
+                    {{ task.title }}
+                </span>
+                <a href="/complete/{{ task.id }}" class="complete-btn">Mark Complete</a>
+                <a href="/delete/{{ task.id }}" class="delete-btn">Delete</a>
             </li>
             {% else %}
             <li>No tasks yet. Add one above!</li>

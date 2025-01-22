@@ -1,20 +1,69 @@
 from flask import Flask,render_template,request,redirect,url_for
+import mysql.connector
 
 app = Flask(__name__)
 
-tasks = []
+# MySQL Database Configuration
+db_config = {
+    'host': 'localhost',  # Replace with your MySQL server hostname
+    'user': 'root',       # Replace with your MySQL username
+    'password': 'root',       # Replace with your MySQL password
+    'database': 'todo_db_flask' # Replace with your database name
+}
 
-@app.route("/")
+
+
+@app.route('/')
 def index():
-    return render_template("index.html",tasks=tasks)
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tasks")
+    tasks = cursor.fetchall()
+    conn.close()
+    return render_template('index.html', tasks=tasks)
 
 @app.route('/add', methods=['POST'])
 def add_task():
-    task = request.form.get('task')
-    if task:
-        tasks.append(task)
+    task_title = request.form.get('task')
+    if task_title:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO tasks (title) VALUES (%s)", (task_title,))
+        conn.commit()
+        conn.close()
     return redirect(url_for('index'))
 
+@app.route('/delete/<int:task_id>')
+def delete_task(task_id):
+    # Delete task from the database
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM tasks WHERE id = %s", (task_id,))
+    mysql.connection.commit()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+
+
+# tasks = []
+
+# @app.route("/")
+# def index():
+#     return render_template("index.html",tasks=tasks)
+
+# @app.route('/add', methods=['POST'])
+# def add_task():
+#     task = request.form.get('task')
+#     if task:
+#         tasks.append(task)
+#     return redirect(url_for('index'))
+
+
+# if __name__ == '__main__':
+#     app.run(debug=True)

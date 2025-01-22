@@ -60,11 +60,16 @@ h1 {
   border-bottom: 1px solid #dee2e6;
 }
 
+.complete-btn {
+  color: #28a745;
+  text-decoration: none;
+}
+
 .delete-btn {
   color: #dc3545;
   text-decoration: none;
 }
 
-.delete-btn:hover {
+.complete-btn:hover, .delete-btn:hover {
   text-decoration: underline;
 }
