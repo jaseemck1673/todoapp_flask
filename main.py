@@ -35,11 +35,13 @@ def add_task():
 
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
-    # Delete task from the database
-    cursor = mysql.connection.cursor()
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
     cursor.execute("DELETE FROM tasks WHERE id = %s", (task_id,))
-    mysql.connection.commit()
+    conn.commit()
+    conn.close()
     return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
